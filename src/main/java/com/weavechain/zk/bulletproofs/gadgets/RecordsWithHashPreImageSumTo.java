@@ -6,7 +6,8 @@ import com.weavechain.zk.bulletproofs.*;
 import io.airlift.compress.Compressor;
 import io.airlift.compress.zstd.ZstdCompressor;
 import lombok.Getter;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.base.Base58;
+import org.bitcoinj.base.Sha256Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +132,7 @@ public class RecordsWithHashPreImageSumTo implements Gadget<RecordsWithHashPreIm
         List<byte[]> hashData = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            byte[] hash = org.bitcoinj.core.Base58.decode(hashes.get(i));
+            byte[] hash = Base58.decode(hashes.get(i));
             hashData.add(hash);
 
             Variable sum = verifier.commit(proof.getCommitment(i * 2));

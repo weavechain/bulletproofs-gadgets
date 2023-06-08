@@ -6,7 +6,7 @@ import com.weavechain.zk.bulletproofs.*;
 import io.airlift.compress.Compressor;
 import io.airlift.compress.zstd.ZstdCompressor;
 import lombok.Getter;
-import org.bitcoinj.core.Base58;
+import org.bitcoinj.base.Base58;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
