@@ -1,6 +1,6 @@
 package com.weavechain.zk.bulletproofs;
 
-import cafe.cryptography.curve25519.Scalar;
+import com.weavechain.curve25519.Scalar;
 import com.google.common.truth.Truth;
 import com.weavechain.zk.bulletproofs.gadgets.NumberNotInListParams;
 import org.testng.annotations.Test;

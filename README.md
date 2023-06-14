@@ -1,25 +1,28 @@
 ## Bulletproofs Gadgets
 
-Zero knowledge proofs using the [Java Bulletproofs implementation](https://github.com/weavechain/bulletproofs).
+Zero Knowledge Proofs gadgets built using the pure [Java Bulletproofs implementation](https://github.com/weavechain/bulletproofs).
 
 Bulletproofs are short non-interactive zero-knowledge proofs that require no trusted setup. 
 
 [Read More about Bulletproofs](https://crypto.stanford.edu/bulletproofs/)
 
-[Paper](https://eprint.iacr.org/2017/1066.pdf)
+[Paper](https://eprint.iacr.org/2017/1066.pdf) 
+(B. Bünz, J. Bootle, D. Boneh, A. Poelstra, P. Wuille, and G. Maxwell.
+Bulletproofs: Short proofs for confidential transactions and more. 2018
+IEEE Symposium on Security and Privacy (SP), pages 315–334, May 2018)
 
 Partially based on the [Rust implementation](https://github.com/lovesh/bulletproofs-r1cs-gadgets) by Lovesh Harchandani
 
 
 ### Gradle Groovy DSL
 ```
-implementation 'com.weavechain:bulletproofs-gadgets:1.0'
+implementation 'com.weavechain:bulletproofs-gadgets:1.0.1'
 ```
 
 ### Gradle Kotlin DSL
 
 ```
-implementation("com.weavechain:bulletproofs-gadgets:1.0")
+implementation("com.weavechain:bulletproofs-gadgets:1.0.1")
 ```
 
 #### Apache Maven
@@ -28,9 +31,35 @@ implementation("com.weavechain:bulletproofs-gadgets:1.0")
 <dependency>
   <groupId>com.weavechain</groupId>
   <artifactId>bulletproofs-gadgets</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
+
+### Gadgets
+
+- NumberInRange
+- NumbersInRange
+- NumberIsPositive
+- NumbersArePositive
+- NumbersSumTo
+- RecordsWithHashesSumTo
+- RecordsWithHashPreImageSumTo
+- RecordsAddUpdateProof
+- NumberIsNonZero
+- NumbersAreNonZero
+- NumberIsZero
+- NumberIsNotEqual
+- NumberIsEqual
+- NumberInList
+- NumberNotInList
+- NumberIsGreaterOrEqual
+- NumberIsLessOrEqual
+- MiMCHashPreImage
+- MiMCStringHashPreImage
+
+### Warning
+
+This bulletproofs gadgets library has been partially audited and is provided as-is, we make no guarantees or warranties to its safety, security and reliability.
 
 ### Usage
 

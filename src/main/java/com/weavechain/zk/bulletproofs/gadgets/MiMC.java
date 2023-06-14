@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
 
-import cafe.cryptography.curve25519.Scalar;
+import com.weavechain.curve25519.Scalar;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.weavechain.zk.bulletproofs.Utils;

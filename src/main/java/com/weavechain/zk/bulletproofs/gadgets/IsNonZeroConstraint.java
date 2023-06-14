@@ -1,6 +1,6 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import cafe.cryptography.curve25519.Scalar;
+import com.weavechain.curve25519.Scalar;
 import com.weavechain.zk.bulletproofs.Allocated;
 import com.weavechain.zk.bulletproofs.ConstraintSystem;
 import com.weavechain.zk.bulletproofs.LinearCombination;

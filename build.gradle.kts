@@ -30,11 +30,11 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.28")
     annotationProcessor("org.projectlombok:lombok:1.18.28")
 
-    implementation("com.weavechain:bulletproofs:1.0")
+    implementation("com.weavechain:bulletproofs:1.0.1")
 
     implementation("org.slf4j:slf4j-api:2.0.0")
 
-    implementation("cafe.cryptography:curve25519-elisabeth:0.1.2")
+    implementation("com.weavechain:curve25519-elisabeth:0.1.3")
     implementation("com.github.aelstad:keccakj:1.1.0")
     implementation("org.bitcoinj:bitcoinj-core:0.17-alpha1")
     implementation("org.msgpack:msgpack-core:0.8.24")
@@ -82,7 +82,7 @@ publishing {
         create<MavenPublication>("Maven") {
             groupId = "com.weavechain"
             artifactId = "bulletproofs-gadets"
-            version = "1.0"
+            version = "1.0.1"
             from(components["java"])
         }
         withType<MavenPublication> {

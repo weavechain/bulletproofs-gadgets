@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import cafe.cryptography.curve25519.CompressedRistretto;
-import cafe.cryptography.curve25519.Scalar;
+import com.weavechain.curve25519.CompressedRistretto;
+import com.weavechain.curve25519.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import lombok.Getter;
 import org.bitcoinj.base.Base58;
