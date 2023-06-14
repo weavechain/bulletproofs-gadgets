@@ -81,7 +81,7 @@ publishing {
     publications {
         create<MavenPublication>("Maven") {
             groupId = "com.weavechain"
-            artifactId = "bulletproofs-gadets"
+            artifactId = "bulletproofs-gadgets"
             version = "1.0.1"
             from(components["java"])
         }
