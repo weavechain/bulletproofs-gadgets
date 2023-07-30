@@ -15,7 +15,7 @@ public class NumberIsZero implements Gadget<NumberIsZeroParams> {
 
     static final Logger logger = LoggerFactory.getLogger(NumberIsZero.class);
 
-    private final GadgetType type = GadgetType.number_is_zero;
+    private final GadgetType type = Gadgets.number_is_zero;
 
     private final boolean batchProof = false;
 

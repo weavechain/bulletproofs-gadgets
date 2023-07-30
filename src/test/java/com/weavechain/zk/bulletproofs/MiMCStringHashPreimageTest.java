@@ -2,6 +2,7 @@ package com.weavechain.zk.bulletproofs;
 
 import com.weavechain.curve25519.Scalar;
 import com.google.common.truth.Truth;
+import com.weavechain.zk.bulletproofs.gadgets.Gadgets;
 import com.weavechain.zk.bulletproofs.gadgets.MiMC;
 import com.weavechain.zk.bulletproofs.gadgets.MiMCStringHashPreImageParams;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class MiMCStringHashPreimageTest extends ZkTest {
 
         Scalar rnd = Utils.randomScalar();
         BulletProofGenerators bg1 = new BulletProofGenerators(generators, 1);
-        Proof proof = bulletProofs.generate(GadgetType.mimc_string_hash_preimage, value, params, rnd, pc, bg1);
+        Proof proof = bulletProofs.generate(Gadgets.mimc_string_hash_preimage, value, params, rnd, pc, bg1);
 
         long mid = System.currentTimeMillis();
 
@@ -65,7 +66,7 @@ public class MiMCStringHashPreimageTest extends ZkTest {
         Proof proof2 = Proof.deserialize(serialization);
 
         BulletProofGenerators bg2 = new BulletProofGenerators(generators, 1);
-        boolean check = bulletProofs.verify(GadgetType.mimc_string_hash_preimage, params, proof2, pc, bg2);
+        boolean check = bulletProofs.verify(Gadgets.mimc_string_hash_preimage, params, proof2, pc, bg2);
 
         long end = System.currentTimeMillis();
         logger.info("Verify (ms): " + (end - mid));

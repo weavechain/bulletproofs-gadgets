@@ -21,7 +21,7 @@ public class MiMC {
 
     private static final int MAX_CACHE_CAPACITY = 10;
 
-    public static final int DEFAULT_MIMC_ROUNDS = 322;
+    public static final int DEFAULT_MIMC_ROUNDS = 322; //should be safe, others use 220. Sometimes even as low as 91
 
     private static final Cache<LongPair, List<Scalar>> CONSTANTS = Caffeine.newBuilder().maximumSize(MAX_CACHE_CAPACITY).build();
 

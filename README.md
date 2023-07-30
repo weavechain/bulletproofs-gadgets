@@ -16,13 +16,13 @@ Partially based on the [Rust implementation](https://github.com/lovesh/bulletpro
 
 ### Gradle Groovy DSL
 ```
-implementation 'com.weavechain:bulletproofs-gadgets:1.0.1'
+implementation 'com.weavechain:bulletproofs-gadgets:1.0.2'
 ```
 
 ### Gradle Kotlin DSL
 
 ```
-implementation("com.weavechain:bulletproofs-gadgets:1.0.1")
+implementation("com.weavechain:bulletproofs-gadgets:1.0.2")
 ```
 
 #### Apache Maven
@@ -31,7 +31,7 @@ implementation("com.weavechain:bulletproofs-gadgets:1.0.1")
 <dependency>
   <groupId>com.weavechain</groupId>
   <artifactId>bulletproofs-gadgets</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
@@ -80,12 +80,12 @@ PedersenCommitment pc = PedersenCommitment.getDefault();
 
 Scalar rnd = Utils.randomScalar();
 BulletProofGenerators bg1 = new BulletProofGenerators(128, 1);
-Proof proof = bulletProofs.generate(GadgetType.number_in_range, value, params, rnd, pc, bg1);
+Proof proof = bulletProofs.generate(Gadgets.number_in_range, value, params, rnd, pc, bg1);
 
 Proof proof2 = Proof.deserialize(proof.serialize());
 
 BulletProofGenerators bg2 = new BulletProofGenerators(128, 1);
-boolean match = bulletProofs.verify(GadgetType.number_in_range, params, proof2, pc, bg2);
+boolean match = bulletProofs.verify(Gadgets.number_in_range, params, proof2, pc, bg2);
 System.out.println(match ? "Success" : "Fail");
 ```
 
@@ -100,12 +100,12 @@ PedersenCommitment pc = PedersenCommitment.getDefault();
 
 Scalar rnd = Utils.randomScalar();
 BulletProofGenerators bg1 = new BulletProofGenerators(128, 1);
-Proof proof = bulletProofs.generate(GadgetType.numbers_sum_to, values, params, rnd, pc, bg1);
+Proof proof = bulletProofs.generate(Gadgets.numbers_sum_to, values, params, rnd, pc, bg1);
 
 Proof proof2 = Proof.deserialize(proof.serialize());
 
 BulletProofGenerators bg2 = new BulletProofGenerators(128, 1);
-boolean match = bulletProofs.verify(GadgetType.numbers_sum_to, params, proof2, pc, bg2);
+boolean match = bulletProofs.verify(Gadgets.numbers_sum_to, params, proof2, pc, bg2);
 System.out.println(match ? "Success" : "Fail");
 ```
 
@@ -121,12 +121,12 @@ PedersenCommitment pc = PedersenCommitment.getDefault();
 
 Scalar rnd = Utils.randomScalar();
 BulletProofGenerators bg1 = new BulletProofGenerators(128, 1);
-Proof proof = bulletProofs.generate(GadgetType.number_in_list, value, params, rnd, pc, bg1);
+Proof proof = bulletProofs.generate(Gadgets.number_in_list, value, params, rnd, pc, bg1);
 
 Proof proof2 = Proof.deserialize(proof.serialize());
 
 BulletProofGenerators bg2 = new BulletProofGenerators(128, 1);
-boolean match = bulletProofs.verify(GadgetType.number_in_list, params, proof2, pc, bg2);
+boolean match = bulletProofs.verify(Gadgets.number_in_list, params, proof2, pc, bg2);
 System.out.println(match ? "Success" : "Fail");
 ```
 

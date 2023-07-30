@@ -15,7 +15,7 @@ public class NumberNotInList implements Gadget<NumberNotInListParams> {
 
     static final Logger logger = LoggerFactory.getLogger(NumberNotInList.class);
 
-    private final GadgetType type = GadgetType.number_not_in_list;
+    private final GadgetType type = Gadgets.number_not_in_list;
 
     private final boolean batchProof = false;
 

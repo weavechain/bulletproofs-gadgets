@@ -15,7 +15,7 @@ public class NumbersInRange implements Gadget<NumbersInRangeParams> {
 
     static final Logger logger = LoggerFactory.getLogger(NumbersInRange.class);
 
-    private final GadgetType type = GadgetType.numbers_in_range;
+    private final GadgetType type = Gadgets.numbers_in_range;
 
     private final boolean batchProof = true;
 

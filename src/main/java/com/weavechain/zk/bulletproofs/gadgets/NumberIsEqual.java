@@ -15,7 +15,7 @@ public class NumberIsEqual implements Gadget<NumberIsEqualParams> {
 
     static final Logger logger = LoggerFactory.getLogger(NumberIsEqual.class);
 
-    private final GadgetType type = GadgetType.number_is_equal;
+    private final GadgetType type = Gadgets.number_is_equal;
 
     private final boolean batchProof = false;
 

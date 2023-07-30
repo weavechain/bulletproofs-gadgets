@@ -15,7 +15,7 @@ public class NumberInList implements Gadget<NumberInListParams> {
 
     static final Logger logger = LoggerFactory.getLogger(NumberInList.class);
 
-    private final GadgetType type = GadgetType.number_in_list;
+    private final GadgetType type = Gadgets.number_in_list;
 
     private final boolean batchProof = false;
 

@@ -22,7 +22,7 @@ public class RecordsAddUpdateProof implements Gadget<RecordsAddPreImageHashParam
 
     static final Logger logger = LoggerFactory.getLogger(RecordsAddUpdateProof.class);
 
-    private final GadgetType type = GadgetType.records_add_update_proof;
+    private final GadgetType type = Gadgets.records_add_update_proof;
 
     private final boolean batchProof = true;
 

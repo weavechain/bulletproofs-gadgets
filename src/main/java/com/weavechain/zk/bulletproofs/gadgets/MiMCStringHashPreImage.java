@@ -22,7 +22,7 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
 
     static final Logger logger = LoggerFactory.getLogger(MiMCStringHashPreImage.class);
 
-    private final GadgetType type = GadgetType.mimc_string_hash_preimage;
+    private final GadgetType type = Gadgets.mimc_string_hash_preimage;
 
     private final boolean batchProof = false;
 

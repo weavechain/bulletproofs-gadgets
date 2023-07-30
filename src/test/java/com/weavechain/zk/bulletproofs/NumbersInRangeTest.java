@@ -2,6 +2,7 @@ package com.weavechain.zk.bulletproofs;
 
 import com.weavechain.curve25519.Scalar;
 import com.google.common.truth.Truth;
+import com.weavechain.zk.bulletproofs.gadgets.Gadgets;
 import com.weavechain.zk.bulletproofs.gadgets.NumbersInRangeParams;
 import org.testng.annotations.Test;
 
@@ -44,11 +45,11 @@ public class NumbersInRangeTest extends ZkTest {
 
         Scalar rnd = Utils.randomScalar();
         BulletProofGenerators bg1 = new BulletProofGenerators(512, 1);
-        Proof proof = bulletProofs.generate(GadgetType.numbers_in_range, values, params, rnd, pc, bg1);
+        Proof proof = bulletProofs.generate(Gadgets.numbers_in_range, values, params, rnd, pc, bg1);
 
         Proof proof2 = Proof.deserialize(proof.serialize());
 
         BulletProofGenerators bg2 = new BulletProofGenerators(512, 1);
-        return bulletProofs.verify(GadgetType.numbers_in_range, params, proof2, pc, bg2);
+        return bulletProofs.verify(Gadgets.numbers_in_range, params, proof2, pc, bg2);
     }
 }

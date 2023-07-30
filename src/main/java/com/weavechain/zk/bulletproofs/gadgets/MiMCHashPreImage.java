@@ -23,7 +23,7 @@ public class MiMCHashPreImage implements Gadget<MiMCHashPreImageParams> {
 
     static final Logger logger = LoggerFactory.getLogger(MiMCHashPreImage.class);
 
-    private final GadgetType type = GadgetType.mimc_hash_preimage;
+    private final GadgetType type = Gadgets.mimc_hash_preimage;
 
     private final boolean batchProof = false;
 

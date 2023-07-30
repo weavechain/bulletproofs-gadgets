@@ -17,7 +17,7 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
 
     static final Logger logger = LoggerFactory.getLogger(RecordsWithHashesSumTo.class);
 
-    private final GadgetType type = GadgetType.records_with_hashes_sum_to;
+    private final GadgetType type = Gadgets.records_with_hashes_sum_to;
 
     private final boolean batchProof = true;
 

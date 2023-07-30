@@ -15,7 +15,7 @@ public class NumbersSumTo implements Gadget<NumbersSumToParams> {
 
     static final Logger logger = LoggerFactory.getLogger(NumbersSumTo.class);
 
-    private final GadgetType type = GadgetType.numbers_sum_to;
+    private final GadgetType type = Gadgets.numbers_sum_to;
 
     private final boolean batchProof = true;
 

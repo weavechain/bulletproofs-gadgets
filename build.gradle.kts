@@ -30,7 +30,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.28")
     annotationProcessor("org.projectlombok:lombok:1.18.28")
 
-    implementation("com.weavechain:bulletproofs:1.0.1")
+    implementation("com.weavechain:bulletproofs:1.0.2")
 
     implementation("org.slf4j:slf4j-api:2.0.0")
 
@@ -82,7 +82,7 @@ publishing {
         create<MavenPublication>("Maven") {
             groupId = "com.weavechain"
             artifactId = "bulletproofs-gadgets"
-            version = "1.0.1"
+            version = "1.0.2"
             from(components["java"])
         }
         withType<MavenPublication> {

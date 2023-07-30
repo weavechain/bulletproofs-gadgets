@@ -15,7 +15,7 @@ public class NumberIsPositive implements Gadget<NumberIsPositiveParams> {
 
     static final Logger logger = LoggerFactory.getLogger(NumberIsPositive.class);
 
-    private final GadgetType type = GadgetType.number_is_positive;
+    private final GadgetType type = Gadgets.number_is_positive;
 
     private final boolean batchProof = false;
 

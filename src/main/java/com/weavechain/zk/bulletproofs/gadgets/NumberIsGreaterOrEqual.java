@@ -15,7 +15,7 @@ public class NumberIsGreaterOrEqual implements Gadget<NumberIsGreaterOrEqualPara
 
     static final Logger logger = LoggerFactory.getLogger(NumberIsGreaterOrEqual.class);
 
-    private final GadgetType type = GadgetType.number_is_greater_or_equal;
+    private final GadgetType type = Gadgets.number_is_greater_or_equal;
 
     private final boolean batchProof = false;
 
