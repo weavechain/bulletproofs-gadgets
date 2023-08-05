@@ -16,13 +16,13 @@ Partially based on the [Rust implementation](https://github.com/lovesh/bulletpro
 
 ### Gradle Groovy DSL
 ```
-implementation 'com.weavechain:bulletproofs-gadgets:1.0.2'
+implementation 'com.weavechain:bulletproofs-gadgets:1.0.4'
 ```
 
 ### Gradle Kotlin DSL
 
 ```
-implementation("com.weavechain:bulletproofs-gadgets:1.0.2")
+implementation("com.weavechain:bulletproofs-gadgets:1.0.4")
 ```
 
 #### Apache Maven
@@ -31,7 +31,7 @@ implementation("com.weavechain:bulletproofs-gadgets:1.0.2")
 <dependency>
   <groupId>com.weavechain</groupId>
   <artifactId>bulletproofs-gadgets</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
