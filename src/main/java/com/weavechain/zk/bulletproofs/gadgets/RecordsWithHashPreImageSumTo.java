@@ -11,6 +11,7 @@ import org.bitcoinj.base.Sha256Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class RecordsWithHashPreImageSumTo implements Gadget<RecordsWithHashPreIm
         Prover prover = new Prover(transcript, pedersenCommitment);
 
         List<byte[]> hashData = new ArrayList<>();
-        Long sum = 0L;
+        BigInteger sum = BigInteger.ZERO;
         List<LinearCombination> sums = new ArrayList<>();
         for (List<Object> it : values) {
             String encoded = MiMCHashPreImage.serializeForHash(it);
@@ -73,7 +74,7 @@ public class RecordsWithHashPreImageSumTo implements Gadget<RecordsWithHashPreIm
             hashData.add(toHash);
 
             int indexValue = params.getSumColumnIndex();
-            Long v = ConvertUtils.convertToLong(it.get(indexValue));
+            BigInteger v = ConvertUtils.convertToBigInteger(it.get(indexValue));
 
             Commitment sumComm = prover.commit(Utils.scalar(sum), rnd != null ? rnd : Utils.randomScalar());
             Allocated asum = new Allocated(sumComm.getVariable(), sum);
@@ -87,7 +88,7 @@ public class RecordsWithHashPreImageSumTo implements Gadget<RecordsWithHashPreIm
             LinearCombination next = LinearCombination.from(asum.getVariable()).clone().add(LinearCombination.from(aval.getVariable()));
             sums.add(next);
 
-            sum += v;
+            sum = sum.add(v);
         }
         prover.constrainLCWithScalar(sums.get(sums.size() - 1), Utils.scalar(sum));
 
@@ -97,7 +98,7 @@ public class RecordsWithHashPreImageSumTo implements Gadget<RecordsWithHashPreIm
 
         Scalar diff = Utils.scalar(params.getExpected()).subtract(Utils.scalar(sum));
         Commitment diffComm = prover.commit(diff, Utils.randomScalar());
-        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.scalarToLong(diff));
+        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.toBigInteger(diff));
         commitments.add(diffComm.getCommitment());
 
         if (checkSumEqual(prover, av, adiff, values.size(), params.getExpected(), params.getBitsize())) {

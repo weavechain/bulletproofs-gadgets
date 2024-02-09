@@ -165,11 +165,11 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
 
             if (d == 1) {
                 Commitment leftComm = prover.commit(left, rnd != null ? rnd : Utils.randomScalar());
-                Allocated aleft = new Allocated(leftComm.getVariable(), Utils.scalarToLong(left));
+                Allocated aleft = new Allocated(leftComm.getVariable(), Utils.toBigInteger(left));
                 commitments.add(leftComm.getCommitment());
 
                 Commitment rightComm = prover.commit(right, rnd != null ? rnd : Utils.randomScalar());
-                Allocated aright = new Allocated(rightComm.getVariable(), Utils.scalarToLong(right));
+                Allocated aright = new Allocated(rightComm.getVariable(), Utils.toBigInteger(right));
                 commitments.add(rightComm.getCommitment());
 
                 LinearCombination hash = MiMCHash.mimc(prover, LinearCombination.from(aleft.getVariable()), LinearCombination.from(aright.getVariable()), seed, rounds);

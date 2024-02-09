@@ -34,6 +34,19 @@ public class ConvertUtils {
         return result;
     }
 
+    public static List<BigInteger> convertToBigIntegerList(Object obj) {
+        List<BigInteger> result = new ArrayList<>();
+        if (obj instanceof List) {
+            for (Object it : (List)obj) {
+                result.add(convertToBigInteger(it, null));
+            }
+        } else {
+            return null;
+        }
+
+        return result;
+    }
+
     public static Long convertToLong(Object obj) {
         return convertToLong(obj, null);
     }

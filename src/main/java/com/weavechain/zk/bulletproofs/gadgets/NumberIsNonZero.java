@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class NumberIsNonZero implements Gadget<NumberIsNonZeroParams> {
 
     @Override
     public Proof generate(Object value, NumberIsNonZeroParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        Long v = ConvertUtils.convertToLong(value);
+        BigInteger v = ConvertUtils.convertToBigInteger(value);
 
         List<CompressedRistretto> commitments = new ArrayList<>();
 
@@ -43,7 +44,7 @@ public class NumberIsNonZero implements Gadget<NumberIsNonZeroParams> {
 
         Scalar ainv = Utils.scalar(v).invert();
         Commitment ainvComm = prover.commit(ainv, Utils.randomScalar());
-        Allocated avinv = new Allocated(ainvComm.getVariable(), Utils.scalarToLong(ainv));
+        Allocated avinv = new Allocated(ainvComm.getVariable(), Utils.toBigInteger(ainv));
         commitments.add(ainvComm.getCommitment());
 
         if (checkNonZero(prover, av, avinv)) {

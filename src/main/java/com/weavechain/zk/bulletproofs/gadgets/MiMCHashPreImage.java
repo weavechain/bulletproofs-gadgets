@@ -38,9 +38,9 @@ public class MiMCHashPreImage implements Gadget<MiMCHashPreImageParams> {
 
     @Override
     public Proof generate(Object value, MiMCHashPreImageParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        List<Long> v = (List<Long>)value;
-        Long left = v.get(0);
-        Long right = v.get(1);
+        List<BigInteger> v = ConvertUtils.convertToBigIntegerList(value);
+        BigInteger left = ConvertUtils.convertToBigInteger(v.get(0));
+        BigInteger right = ConvertUtils.convertToBigInteger(v.get(1));
 
         List<CompressedRistretto> commitments = new ArrayList<>();
 

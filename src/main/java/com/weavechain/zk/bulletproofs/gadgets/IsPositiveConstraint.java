@@ -15,7 +15,7 @@ public class IsPositiveConstraint {
 
         Scalar exp2 = Scalar.ONE;
         for (int i = 0; i < bitsize; i++) {
-            long bit = ((variable.getAssignment() != null ? variable.getAssignment() : 0L) >> i) & 1;
+            long bit = variable.getAssignment() != null && variable.getAssignment().testBit(i) ? 1L : 0L;
             LRO lro = cs.allocateMultiplier(Utils.scalar(1 - bit), Utils.scalar(bit));
 
             // Enforce a * b = 0, so one of (a,b) is zero

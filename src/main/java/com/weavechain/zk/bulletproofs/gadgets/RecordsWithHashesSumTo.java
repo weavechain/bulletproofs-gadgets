@@ -8,6 +8,7 @@ import org.bitcoinj.base.Base58;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
         byte[] salt = params.getSalt().getBytes(StandardCharsets.UTF_8);
         String digest = null; //use configured default
 
-        Long sum = 0L;
+        BigInteger sum = BigInteger.ZERO;
         List<LinearCombination> sums = new ArrayList<>();
         for (List<Object> it : values) {
             String encoded = MiMCHashPreImage.serializeForHash(it);
@@ -56,18 +57,18 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
             Scalar hashScalar2 = Scalar.fromBits(hash2);
 
             Commitment vComm = prover.commit(hashScalar, rnd != null ? rnd : Utils.randomScalar());
-            Allocated av = new Allocated(vComm.getVariable(), Utils.scalarToLong(hashScalar));
+            Allocated av = new Allocated(vComm.getVariable(), Utils.toBigInteger(hashScalar));
             commitments.add(vComm.getCommitment());
 
             Commitment diffComm = prover.commit(hashScalar2, Utils.randomScalar());
-            Allocated adiff = new Allocated(diffComm.getVariable(), Utils.scalarToLong(hashScalar2));
+            Allocated adiff = new Allocated(diffComm.getVariable(), Utils.toBigInteger(hashScalar2));
             commitments.add(diffComm.getCommitment());
 
             prover.constrainLCWithScalar(LinearCombination.from(av.getVariable()), hashScalar);
             prover.constrainLCWithScalar(LinearCombination.from(adiff.getVariable()), hashScalar2);
 
             int indexValue = params.getSumColumnIndex();
-            Long v = ConvertUtils.convertToLong(it.get(indexValue));
+            BigInteger v = ConvertUtils.convertToBigInteger(it.get(indexValue));
 
             Commitment sumComm = prover.commit(Utils.scalar(sum), rnd != null ? rnd : Utils.randomScalar());
             Allocated asum = new Allocated(sumComm.getVariable(), sum);
@@ -80,7 +81,7 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
             LinearCombination next = LinearCombination.from(asum.getVariable()).clone().add(LinearCombination.from(aval.getVariable()));
             sums.add(next);
 
-            sum += v;
+            sum = sum.add(v);
         }
         prover.constrainLCWithScalar(sums.get(sums.size() - 1), Utils.scalar(sum));
 
@@ -90,7 +91,7 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
 
         Scalar diff = Utils.scalar(params.getExpected()).subtract(Utils.scalar(sum));
         Commitment diffComm = prover.commit(diff, Utils.randomScalar());
-        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.scalarToLong(diff));
+        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.toBigInteger(diff));
         commitments.add(diffComm.getCommitment());
 
         if (checkSumEqual(prover, av, adiff, values.size(), params.getExpected(), params.getBitsize())) {

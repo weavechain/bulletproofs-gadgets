@@ -59,11 +59,11 @@ public class RecordsAddUpdateProof implements Gadget<RecordsAddPreImageHashParam
         Prover prover = new Prover(transcript, pedersenCommitment);
 
         Commitment leftComm = prover.commit(left, rnd != null ? rnd : Utils.randomScalar());
-        Allocated aleft = new Allocated(leftComm.getVariable(), Utils.scalarToLong(left));
+        Allocated aleft = new Allocated(leftComm.getVariable(), Utils.toBigInteger(left));
         commitments.add(leftComm.getCommitment());
 
         Commitment rightComm = prover.commit(right, rnd != null ? rnd : Utils.randomScalar());
-        Allocated aright = new Allocated(rightComm.getVariable(), Utils.scalarToLong(right));
+        Allocated aright = new Allocated(rightComm.getVariable(), Utils.toBigInteger(right));
         commitments.add(rightComm.getCommitment());
 
         Scalar image = MiMC.mimc(left, right, params.getSeed(), params.getRounds());

@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class NumberIsEqual implements Gadget<NumberIsEqualParams> {
 
     @Override
     public Proof generate(Object value, NumberIsEqualParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        Long v = ConvertUtils.convertToLong(value);
+        BigInteger v = ConvertUtils.convertToBigInteger(value);
 
         List<CompressedRistretto> commitments = new ArrayList<>();
 
@@ -43,7 +44,7 @@ public class NumberIsEqual implements Gadget<NumberIsEqualParams> {
 
         Scalar diff = Utils.scalar(params.getExpected()).subtract(Utils.scalar(v));
         Commitment diffComm = prover.commit(diff, Utils.randomScalar());
-        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.scalarToLong(diff));
+        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.toBigInteger(diff));
         commitments.add(diffComm.getCommitment());
 
         if (checkEqual(prover, av, adiff, params.getExpected(), params.getBitsize())) {

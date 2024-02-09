@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,16 +31,16 @@ public class NumbersSumTo implements Gadget<NumbersSumToParams> {
 
     @Override
     public Proof generate(Object value, NumbersSumToParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        List<Long> values = ConvertUtils.convertToLongList(value);
+        List<BigInteger> values = ConvertUtils.convertToBigIntegerList(value);
 
         List<CompressedRistretto> commitments = new ArrayList<>();
 
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);
 
-        Long sum = 0L;
+        BigInteger sum = BigInteger.ZERO;
         List<LinearCombination> sums = new ArrayList<>();
-        for (Long v : values) {
+        for (BigInteger v : values) {
             Commitment leftComm = prover.commit(Utils.scalar(sum), rnd != null ? rnd : Utils.randomScalar());
             Allocated aleft = new Allocated(leftComm.getVariable(), sum);
             commitments.add(leftComm.getCommitment());
@@ -51,7 +52,7 @@ public class NumbersSumTo implements Gadget<NumbersSumToParams> {
             LinearCombination next = LinearCombination.from(aleft.getVariable()).clone().add(LinearCombination.from(aright.getVariable()));
             sums.add(next);
 
-            sum += v;
+            sum = sum.add(v);
         }
         prover.constrainLCWithScalar(sums.get(sums.size() - 1), Utils.scalar(sum));
 
@@ -61,7 +62,7 @@ public class NumbersSumTo implements Gadget<NumbersSumToParams> {
 
         Scalar diff = Utils.scalar(params.getExpected()).subtract(Utils.scalar(sum));
         Commitment diffComm = prover.commit(diff, Utils.randomScalar());
-        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.scalarToLong(diff));
+        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.toBigInteger(diff));
         commitments.add(diffComm.getCommitment());
 
         if (checkEqual(prover, av, adiff, values.size(), params.getExpected(), params.getBitsize())) {

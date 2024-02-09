@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class NumbersArePositive implements Gadget<NumbersArePositiveParams> {
 
     @Override
     public Proof generate(Object value, NumbersArePositiveParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        List<Long> values = ConvertUtils.convertToLongList(value);
+        List<BigInteger> values = ConvertUtils.convertToBigIntegerList(value);
         Integer bitsize = params.getBitsize();
 
         List<CompressedRistretto> commitments = new ArrayList<>();
@@ -38,7 +39,7 @@ public class NumbersArePositive implements Gadget<NumbersArePositiveParams> {
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);
 
-        for (Long v : values) {
+        for (BigInteger v : values) {
             Commitment vComm = prover.commit(Utils.scalar(v), rnd != null ? rnd : Utils.randomScalar());
             Allocated av = new Allocated(vComm.getVariable(), v);
             commitments.add(vComm.getCommitment());

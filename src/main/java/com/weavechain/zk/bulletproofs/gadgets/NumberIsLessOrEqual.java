@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +31,10 @@ public class NumberIsLessOrEqual implements Gadget<NumberIsLessOrEqualParams> {
 
     @Override
     public Proof generate(Object value, NumberIsLessOrEqualParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        Long v = ConvertUtils.convertToLong(value);
+        BigInteger v = ConvertUtils.convertToBigInteger(value);
         Integer bitsize = params.getBitsize();
 
-        Long b = params.getMax() - v;
+        BigInteger b = params.getMax().subtract(v);
 
         List<CompressedRistretto> commitments = new ArrayList<>();
 
@@ -74,7 +75,7 @@ public class NumberIsLessOrEqual implements Gadget<NumberIsLessOrEqualParams> {
         }
     }
 
-    public boolean checkLess(ConstraintSystem cs, Allocated v, Allocated b, Long max, Integer bitsize) {
+    public boolean checkLess(ConstraintSystem cs, Allocated v, Allocated b, BigInteger max, Integer bitsize) {
         cs.constrain(LinearCombination.from(Utils.scalar(max)).sub(LinearCombination.from(v.getVariable())).sub(LinearCombination.from(b.getVariable())));
 
         return IsPositiveConstraint.verify(cs, b, bitsize);

@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,16 +31,16 @@ public class NumbersInRange implements Gadget<NumbersInRangeParams> {
 
     @Override
     public Proof generate(Object value, NumbersInRangeParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        List<Long> values = ConvertUtils.convertToLongList(value);
+        List<BigInteger> values = ConvertUtils.convertToBigIntegerList(value);
         Integer bitsize = params.getBitsize();
 
         List<CompressedRistretto> commitments = new ArrayList<>();
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);
 
-        for (Long v : values) {
-            Long a = v - params.getMin();
-            Long b = params.getMax() - v;
+        for (BigInteger v : values) {
+            BigInteger a = v.subtract(params.getMin());
+            BigInteger b = params.getMax().subtract(v);
 
             Commitment vComm = prover.commit(Utils.scalar(v), rnd != null ? rnd : Utils.randomScalar());
             Allocated av = new Allocated(vComm.getVariable(), v);
@@ -84,11 +85,11 @@ public class NumbersInRange implements Gadget<NumbersInRangeParams> {
         return verifier.verify(proof, pedersenCommitment, generators);
     }
 
-    public boolean checkBound(ConstraintSystem cs, Allocated v, Allocated a, Allocated b, Long min, Long max, Integer bitsize) {
+    public boolean checkBound(ConstraintSystem cs, Allocated v, Allocated a, Allocated b, BigInteger min, BigInteger max, Integer bitsize) {
         cs.constrain(LinearCombination.from(v.getVariable()).sub(LinearCombination.from(Utils.scalar(min))).sub(LinearCombination.from(a.getVariable())));
         cs.constrain(LinearCombination.from(Utils.scalar(max)).sub(LinearCombination.from(v.getVariable())).sub(LinearCombination.from(b.getVariable())));
 
-        cs.constrainLCWithScalar(LinearCombination.from(a.getVariable()).add(LinearCombination.from(b.getVariable())), Utils.scalar(max - min));
+        cs.constrainLCWithScalar(LinearCombination.from(a.getVariable()).add(LinearCombination.from(b.getVariable())), Utils.scalar(max.subtract(min)));
 
         return IsPositiveConstraint.verify(cs, a, bitsize) && IsPositiveConstraint.verify(cs, b, bitsize);
     }

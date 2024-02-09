@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class NumberNotInList implements Gadget<NumberNotInListParams> {
 
     @Override
     public Proof generate(Object value, NumberNotInListParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
-        Long v = ConvertUtils.convertToLong(value);
+        BigInteger v = ConvertUtils.convertToBigInteger(value);
 
         List<Allocated> diffs = new ArrayList<>();
         List<Allocated> diffinvs = new ArrayList<>();
