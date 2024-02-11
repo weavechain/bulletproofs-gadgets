@@ -39,22 +39,15 @@ public class NumbersSumTo implements Gadget<NumbersSumToParams> {
         Prover prover = new Prover(transcript, pedersenCommitment);
 
         BigInteger sum = BigInteger.ZERO;
-        List<LinearCombination> sums = new ArrayList<>();
+        LinearCombination next = null;
         for (BigInteger v : values) {
-            Commitment leftComm = prover.commit(Utils.scalar(sum), rnd != null ? rnd : Utils.randomScalar());
-            Allocated aleft = new Allocated(leftComm.getVariable(), sum);
-            commitments.add(leftComm.getCommitment());
+            Commitment vComm = prover.commit(Utils.scalar(v), rnd != null ? rnd : Utils.randomScalar());
+            commitments.add(vComm.getCommitment());
 
-            Commitment rightComm = prover.commit(Utils.scalar(v), rnd != null ? rnd : Utils.randomScalar());
-            Allocated aright = new Allocated(rightComm.getVariable(), v);
-            commitments.add(rightComm.getCommitment());
-
-            LinearCombination next = LinearCombination.from(aleft.getVariable()).clone().add(LinearCombination.from(aright.getVariable()));
-            sums.add(next);
-
+            next = next != null ? next.add(LinearCombination.from(vComm.getVariable())) : LinearCombination.from(vComm.getVariable());
             sum = sum.add(v);
         }
-        prover.constrainLCWithScalar(sums.get(sums.size() - 1), Utils.scalar(sum));
+        prover.constrainLCWithScalar(next, Utils.scalar(sum));
 
         Commitment vComm = prover.commit(Utils.scalar(sum), rnd != null ? rnd : Utils.randomScalar());
         Allocated av = new Allocated(vComm.getVariable(), sum);
@@ -62,10 +55,9 @@ public class NumbersSumTo implements Gadget<NumbersSumToParams> {
 
         Scalar diff = Utils.scalar(params.getExpected()).subtract(Utils.scalar(sum));
         Commitment diffComm = prover.commit(diff, Utils.randomScalar());
-        Allocated adiff = new Allocated(diffComm.getVariable(), Utils.toBigInteger(diff));
         commitments.add(diffComm.getCommitment());
 
-        if (checkEqual(prover, av, adiff, values.size(), params.getExpected(), params.getBitsize())) {
+        if (checkEqual(prover, av, diffComm.getVariable(), values.size(), params.getExpected(), params.getBitsize())) {
             return new Proof(prover.prove(generators), commitments);
         } else {
             logger.error("Failed statement check");
@@ -78,48 +70,41 @@ public class NumbersSumTo implements Gadget<NumbersSumToParams> {
         Transcript transcript = new Transcript();
         Verifier verifier = new Verifier(transcript);
 
-        List<LinearCombination> sums = buildSums(verifier, proof, params.getCount());
-        verifier.constrainLCWithScalar(sums.get(sums.size() - 1), Utils.scalar(params.getExpected()));
+        LinearCombination sum = buildSum(verifier, proof, params.getCount());
+        verifier.constrainLCWithScalar(sum, Utils.scalar(params.getExpected()));
 
-        Variable v = verifier.commit(proof.getCommitment(sums.size() * 2));
+        Variable v = verifier.commit(proof.getCommitment(params.getCount()));
         Allocated av = new Allocated(v, null);
 
-        Variable vdiff = verifier.commit(proof.getCommitment(sums.size() * 2 + 1));
-        Allocated adiff = new Allocated(vdiff, null);
+        Variable vdiff = verifier.commit(proof.getCommitment(params.getCount() + 1));
 
-        if (checkEqual(verifier, av, adiff, sums.size(), params.getExpected(), params.getBitsize())) {
+        if (checkEqual(verifier, av, vdiff, params.getCount(), params.getExpected(), params.getBitsize())) {
             return verifier.verify(proof, pedersenCommitment, generators);
         } else {
             return false;
         }
     }
 
-    private List<LinearCombination> buildSums(Verifier verifier, Proof proof, int count) {
-        List<LinearCombination> sums = new ArrayList<>();
-
+    private LinearCombination buildSum(Verifier verifier, Proof proof, int count) {
+        LinearCombination next = null;
         for (int i = 0; i < count; i++) {
-            Variable sum = verifier.commit(proof.getCommitment(i * 2));
-            Allocated asum = new Allocated(sum, null);
+            Variable val = verifier.commit(proof.getCommitment(i));
 
-            Variable val = verifier.commit(proof.getCommitment(i * 2 + 1));
-            Allocated aval = new Allocated(val, null);
-
-            LinearCombination next = LinearCombination.from(asum.getVariable()).clone().add(LinearCombination.from(aval.getVariable()));
-            sums.add(next);
+            next = next != null ? next.add(LinearCombination.from(val)) : LinearCombination.from(val);
         }
 
-        return sums;
+        return next;
     }
 
-    public boolean checkEqual(ConstraintSystem verifier, Allocated v, Allocated diff, int count, Long expected, int bitsize) {
+    public boolean checkEqual(ConstraintSystem verifier, Allocated v, Variable diff, int count, Long expected, int bitsize) {
         if (count == 0) {
             return expected == 0;
         } else {
             LinearCombination product = LinearCombination.from(Variable.ONE);
 
-            verifier.constrainLCWithScalar(LinearCombination.from(diff.getVariable()).add(LinearCombination.from(v.getVariable())), Utils.scalar(expected));
+            verifier.constrainLCWithScalar(LinearCombination.from(diff).add(LinearCombination.from(v.getVariable())), Utils.scalar(expected));
 
-            Variable o1 = verifier.multiply(product, LinearCombination.from(diff.getVariable())).getOutput();
+            Variable o1 = verifier.multiply(product, LinearCombination.from(diff)).getOutput();
             product = LinearCombination.from(o1);
 
             verifier.constrain(product);
