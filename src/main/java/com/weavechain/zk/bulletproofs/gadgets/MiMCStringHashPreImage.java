@@ -145,16 +145,18 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
     protected static boolean hashBytes(Prover prover, byte[] data, long seed, int rounds, Scalar rnd, AtomicInteger depth, List<LinearCombination> hashes, List<CompressedRistretto> commitments) {
         int len = data.length;
         int d = depth.incrementAndGet();
-        int pairs = len / 64 + (len % 64 != 0 ? 1 : 0);
+
+        final int chunkSize = d == 1 ? 31 : 32;
+        int pairs = len / (2 * chunkSize) + (len % (2 * chunkSize) != 0 ? 1 : 0);
 
         byte[] output = new byte[32 * pairs];
         for (int i = 0; i < pairs; i++) {
-            int idx = i * 64;
+            int idx = i * (2 * chunkSize);
             byte[] l = new byte[32];
-            System.arraycopy(data, idx, l, 0, Math.min(32, len - idx));
+            System.arraycopy(data, idx, l, 0, Math.min(chunkSize, len - idx));
             byte[] r = new byte[32];
-            if (idx + 32 < len) {
-                System.arraycopy(data, idx + 32, r, 0, Math.min(32, len - idx - 32));
+            if (idx + chunkSize < len) {
+                System.arraycopy(data, idx + chunkSize, r, 0, Math.min(chunkSize, len - idx - chunkSize));
             }
 
             //TODO: might need to check for invalid scalar representations if (l[31] >> 7 & 1) != 0 and add a workaround

@@ -81,27 +81,29 @@ public class MiMC {
 
     private static byte[] hashBytes(byte[] input, long seed, int rounds, AtomicInteger depth, AtomicInteger length) {
         int len = input.length;
-        depth.incrementAndGet();
-        int pairs = len / 64 + (len % 64 != 0 ? 1 : 0);
+        int d = depth.incrementAndGet();
+
+        final int chunkSize = d == 1 ? 31 : 32;
+        int pairs = len / (2 * chunkSize) + (len % (2 * chunkSize) != 0 ? 1 : 0);
         if (length != null) {
             length.set(pairs * 2);
         }
 
         byte[] output = new byte[32 * pairs];
         for (int i = 0; i < pairs; i++) {
-            int idx = i * 64;
+            int idx = i * (2 * chunkSize);
             byte[] left = new byte[32];
-            System.arraycopy(input, idx, left, 0, Math.min(32, len - idx));
+            System.arraycopy(input, idx, left, 0, Math.min(chunkSize, len - idx));
             byte[] right = new byte[32];
-            if (idx + 32 < len) {
-                System.arraycopy(input, idx + 32, right, 0, Math.min(32, len - idx - 32));
+            if (idx + chunkSize < len) {
+                System.arraycopy(input, idx + chunkSize, right, 0, Math.min(chunkSize, len - idx - chunkSize));
             }
 
             Scalar hash = MiMC.mimc(Scalar.fromBits(left), Scalar.fromBits(right), seed, rounds);
             System.arraycopy(hash.toByteArray(), 0, output, i * 32, 32);
         }
 
-        return output.length == 32 ? output : hashBytes(output, seed, rounds, depth, null);
+        return output.length <= 32 ? output : hashBytes(output, seed, rounds, depth, null);
     }
 
     @Getter
