@@ -1,6 +1,6 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ public class IsPositiveConstraint {
     public static boolean verify(ConstraintSystem cs, Allocated variable, int bitsize) {
         List<Term> constraints = new ArrayList<>();
 
-        constraints.add(new Term(variable.getVariable(), Utils.MINUS_ONE));
+        constraints.add(new Term(variable.getVariable(), BulletProofs.getFactory().minus_one()));
 
-        Scalar exp2 = Scalar.ONE;
+        Scalar exp2 = BulletProofs.getFactory().one();
         for (int i = 0; i < bitsize; i++) {
             long bit = variable.getAssignment() != null && variable.getAssignment().testBit(i) ? 1L : 0L;
             LRO lro = cs.allocateMultiplier(Utils.scalar(1 - bit), Utils.scalar(bit));
@@ -22,7 +22,7 @@ public class IsPositiveConstraint {
             cs.constrain(LinearCombination.from(lro.getOutput()));
 
             // Enforce that a = 1 - b, so they both are 1 or 0
-            cs.constrain(LinearCombination.from(lro.getLeft()).add(LinearCombination.from(lro.getRight()).sub(LinearCombination.from(Scalar.ONE))));
+            cs.constrain(LinearCombination.from(lro.getLeft()).add(LinearCombination.from(lro.getRight()).sub(BulletProofs.getFactory().one_lc())));
 
             constraints.add(new Term(lro.getRight(), exp2));
             exp2 = exp2.add(exp2);

@@ -1,9 +1,10 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
 
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.Scalar;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.weavechain.zk.bulletproofs.BulletProofs;
 import com.weavechain.zk.bulletproofs.Utils;
 import io.airlift.compress.Compressor;
 import io.airlift.compress.zstd.ZstdCompressor;
@@ -71,12 +72,12 @@ public class MiMC {
         int len = compressor.compress(data, 0, data.length, compressed, 0, compressed.length);
 
         byte[] result = hashBytes(Arrays.copyOfRange(compressed, 0, len), seed, rounds, depth, length);
-        return Scalar.fromBits(result);
+        return BulletProofs.getFactory().fromBits(result);
     }
 
     public static Scalar hash(byte[] data, long seed, int rounds, AtomicInteger depth, AtomicInteger length) {
         byte[] result = hashBytes(data, seed, rounds, depth, length);
-        return Scalar.fromBits(result);
+        return BulletProofs.getFactory().fromBits(result);
     }
 
     private static byte[] hashBytes(byte[] input, long seed, int rounds, AtomicInteger depth, AtomicInteger length) {
@@ -99,7 +100,7 @@ public class MiMC {
                 System.arraycopy(input, idx + chunkSize, right, 0, Math.min(chunkSize, len - idx - chunkSize));
             }
 
-            Scalar hash = MiMC.mimc(Scalar.fromBits(left), Scalar.fromBits(right), seed, rounds);
+            Scalar hash = MiMC.mimc(BulletProofs.getFactory().fromBits(left), BulletProofs.getFactory().fromBits(right), seed, rounds);
             System.arraycopy(hash.toByteArray(), 0, output, i * 32, 32);
         }
 

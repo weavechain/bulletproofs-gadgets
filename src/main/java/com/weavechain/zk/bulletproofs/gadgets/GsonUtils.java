@@ -1,6 +1,6 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.Scalar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.weavechain.zk.bulletproofs.Utils;

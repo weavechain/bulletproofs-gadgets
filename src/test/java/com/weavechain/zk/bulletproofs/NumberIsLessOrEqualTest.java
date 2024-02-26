@@ -1,6 +1,6 @@
 package com.weavechain.zk.bulletproofs;
 
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.Scalar;
 import com.google.common.truth.Truth;
 import com.weavechain.zk.bulletproofs.gadgets.Gadgets;
 import com.weavechain.zk.bulletproofs.gadgets.NumberIsLessOrEqualParams;

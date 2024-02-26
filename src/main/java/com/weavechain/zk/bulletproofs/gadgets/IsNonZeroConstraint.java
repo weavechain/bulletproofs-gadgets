@@ -1,16 +1,12 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.Scalar;
-import com.weavechain.zk.bulletproofs.Allocated;
-import com.weavechain.zk.bulletproofs.ConstraintSystem;
-import com.weavechain.zk.bulletproofs.LinearCombination;
-import com.weavechain.zk.bulletproofs.Variable;
+import com.weavechain.zk.bulletproofs.*;
 
 public class IsNonZeroConstraint {
 
     public static boolean verify(ConstraintSystem cs, Allocated x, Allocated xinv) {
         LinearCombination x_lc = LinearCombination.from(x.getVariable());
-        LinearCombination y_lc = LinearCombination.from(Scalar.ONE);
+        LinearCombination y_lc = BulletProofs.getFactory().one_lc();
 
         LinearCombination o1 = LinearCombination.from(cs.multiply(x_lc.clone(), LinearCombination.from(Variable.ONE).sub(y_lc.clone())).getOutput());
         cs.constrain(o1);

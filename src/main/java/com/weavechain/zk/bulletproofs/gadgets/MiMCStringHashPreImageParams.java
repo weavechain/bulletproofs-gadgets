@@ -1,6 +1,6 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.GadgetParamsSerialized;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

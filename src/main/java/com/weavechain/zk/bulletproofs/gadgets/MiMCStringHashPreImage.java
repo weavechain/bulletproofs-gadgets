@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.CompressedRistretto;
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.ECPoint;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import io.airlift.compress.Compressor;
 import io.airlift.compress.zstd.ZstdCompressor;
@@ -57,7 +57,7 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
                 return GsonUtils.getGsonWithTransient().fromJson(params, MiMCStringHashPreImageParams.class);
             } catch (Exception e) {
                 String encodedHash = ConvertUtils.convertToString(items.get("hash"));
-                Scalar hash = Scalar.fromBits(Base58.decode(encodedHash));
+                Scalar hash = BulletProofs.getFactory().fromBits(Base58.decode(encodedHash));
                 int length = ConvertUtils.convertToInteger(items.get("length"));
 
                 return new MiMCStringHashPreImageParams(rounds, seed, hash, length);
@@ -84,7 +84,7 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
             len = data.length;
         }
 
-        List<CompressedRistretto> commitments = new ArrayList<>();
+        List<ECPoint> commitments = new ArrayList<>();
         List<LinearCombination> hashes = new ArrayList<>();
 
         Transcript transcript = new Transcript();
@@ -135,14 +135,14 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
     private static List<LinearCombination> buildHashes(ConstraintSystem cs, long seed, int rounds, List<LinearCombination> inputs) {
         List<LinearCombination> hashes = new ArrayList<>();
         for (int i = 0; i < inputs.size(); i += 2) {
-            LinearCombination hash = MiMCHash.mimc(cs, inputs.get(i), i + 1 < inputs.size() ? inputs.get(i + 1) : LinearCombination.from(Scalar.ZERO), seed, rounds);
+            LinearCombination hash = MiMCHash.mimc(cs, inputs.get(i), i + 1 < inputs.size() ? inputs.get(i + 1) : LinearCombination.from(BulletProofs.getFactory().zero()), seed, rounds);
             hashes.add(hash);
         }
 
         return hashes;
     }
 
-    protected static boolean hashBytes(Prover prover, byte[] data, long seed, int rounds, Scalar rnd, AtomicInteger depth, List<LinearCombination> hashes, List<CompressedRistretto> commitments) {
+    protected static boolean hashBytes(Prover prover, byte[] data, long seed, int rounds, Scalar rnd, AtomicInteger depth, List<LinearCombination> hashes, List<ECPoint> commitments) {
         int len = data.length;
         int d = depth.incrementAndGet();
 
@@ -160,8 +160,8 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
             }
 
             //TODO: might need to check for invalid scalar representations if (l[31] >> 7 & 1) != 0 and add a workaround
-            Scalar left = Scalar.fromBits(l);
-            Scalar right = Scalar.fromBits(r);
+            Scalar left = BulletProofs.getFactory().fromBits(l);
+            Scalar right = BulletProofs.getFactory().fromBits(r);
 
             //TODO: evaluate adding commitments on every step
 
@@ -189,7 +189,7 @@ public class MiMCStringHashPreImage implements Gadget<MiMCStringHashPreImagePara
         }
 
         if (output.length == 32) {
-            prover.constrainLCWithScalar(hashes.get(hashes.size() - 1), Scalar.fromBits(output));
+            prover.constrainLCWithScalar(hashes.get(hashes.size() - 1), BulletProofs.getFactory().fromBits(output));
 
             return true;
         } else {

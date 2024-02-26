@@ -2,7 +2,7 @@ import com.github.jk1.license.filter.DependencyFilter
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 
 group = "com.weavechain"
-version = "1.0.9"
+version = "1.0.10"
 
 plugins {
     java
@@ -30,13 +30,13 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.28")
     annotationProcessor("org.projectlombok:lombok:1.18.28")
 
-    implementation("com.weavechain:bulletproofs:1.0.9")
+    implementation("com.weavechain:bulletproofs:1.0.10")
 
     implementation("org.slf4j:slf4j-api:2.0.0")
 
     implementation("com.weavechain:curve25519-elisabeth:0.1.5")
     implementation("com.github.aelstad:keccakj:1.1.0")
-    implementation("org.bitcoinj:bitcoinj-core:0.17-alpha1")
+    implementation("org.bitcoinj:bitcoinj-core:0.17-alpha3")
     implementation("org.msgpack:msgpack-core:0.8.24")
     implementation("io.airlift:aircompressor:0.21")
     implementation("com.github.ben-manes:caffeine:3.1.6") {
@@ -82,7 +82,7 @@ publishing {
         create<MavenPublication>("Maven") {
             groupId = "com.weavechain"
             artifactId = "bulletproofs-gadgets"
-            version = "1.0.9"
+            version = "1.0.10"
             from(components["java"])
         }
         withType<MavenPublication> {

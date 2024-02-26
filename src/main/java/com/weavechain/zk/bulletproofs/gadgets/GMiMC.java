@@ -3,7 +3,8 @@ package com.weavechain.zk.bulletproofs.gadgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.Scalar;
+import com.weavechain.zk.bulletproofs.BulletProofs;
 import lombok.Getter;
 
 public class GMiMC {
@@ -38,7 +39,7 @@ public class GMiMC {
         items.add(left);
         items.add(right);
         for (int i = 0; i < stateSize - 2; i++) {
-            items.add(Scalar.ZERO);
+            items.add(BulletProofs.getFactory().zero());
         }
 
         List<Scalar> result = hash.permute(items);
@@ -77,7 +78,7 @@ public class GMiMC {
             List<Scalar> state = new ArrayList<>(input);
             for (int r = 0; r < rounds - 1; r++) {
                 round(state, r);
-                state.add(1, Scalar.ZERO);
+                state.add(1, BulletProofs.getFactory().zero());
                 state.remove(state.size() - 1);
             }
 
@@ -87,7 +88,7 @@ public class GMiMC {
         }
 
         List<Scalar> state = new ArrayList<>(input);
-        Scalar acc = Scalar.ZERO;
+        Scalar acc = BulletProofs.getFactory().zero();
         List<Scalar> items = new ArrayList<>(this.stateSize - 1);
         for (int r = 0; r < rounds - 1; r++) {
             Scalar power = sbox(state.get(0), r);
@@ -95,7 +96,7 @@ public class GMiMC {
             acc = acc.subtract(items.get(items.size() - 1));
             acc = acc.add(power);
 
-            state.add(1, Scalar.ZERO);
+            state.add(1, BulletProofs.getFactory().zero());
             state.remove(state.size() - 1);
 
             state.set(0, state.get(0).add(acc));

@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.CompressedRistretto;
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.ECPoint;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class NumberNotInList implements Gadget<NumberNotInListParams> {
 
         List<Allocated> diffs = new ArrayList<>();
         List<Allocated> diffinvs = new ArrayList<>();
-        List<CompressedRistretto> commitments = new ArrayList<>();
+        List<ECPoint> commitments = new ArrayList<>();
 
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);
@@ -81,13 +81,13 @@ public class NumberNotInList implements Gadget<NumberNotInListParams> {
         List<Allocated> diffs = new ArrayList<>();
         List<Allocated> diffinvs = new ArrayList<>();
         for (int i = 0; i < params.getList().size(); i++) {
-            CompressedRistretto committment = proof.getCommitments().get(2 * i + 1);
+            ECPoint committment = proof.getCommitments().get(2 * i + 1);
             Variable diffComm = verifier.commit(committment);
             Allocated adiff = new Allocated(diffComm, null);
 
             diffs.add(adiff);
 
-            CompressedRistretto committmentinv = proof.getCommitments().get(2 * i + 2);
+            ECPoint committmentinv = proof.getCommitments().get(2 * i + 2);
             Variable diffinvComm = verifier.commit(committmentinv);
             Allocated adiffinv = new Allocated(diffinvComm, null);
 

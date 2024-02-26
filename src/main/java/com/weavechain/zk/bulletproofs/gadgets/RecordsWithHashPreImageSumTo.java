@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.CompressedRistretto;
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.ECPoint;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import io.airlift.compress.Compressor;
 import io.airlift.compress.zstd.ZstdCompressor;
@@ -46,7 +46,7 @@ public class RecordsWithHashPreImageSumTo implements Gadget<RecordsWithHashPreIm
     public Proof generate(Object value, RecordsWithHashPreImageSumToParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
         List<List<Object>> values = (List<List<Object>>)value;
 
-        List<CompressedRistretto> commitments = new ArrayList<>();
+        List<ECPoint> commitments = new ArrayList<>();
 
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);
@@ -157,7 +157,7 @@ public class RecordsWithHashPreImageSumTo implements Gadget<RecordsWithHashPreIm
         if (checkSumEqual(verifier, av, adiff, sums.size(), params.getExpected(), params.getBitsize())) {
             int startIdx = count * 2 + 2;
             for (byte[] hash : hashData) {
-                Scalar hashScalar = Scalar.fromBits(hash);
+                Scalar hashScalar = BulletProofs.getFactory().fromBits(hash);
 
                 int len = 64; //TODO: !!! we need the size of serialziations (or a max size and padding)
                 int pairs = len / 64 + (len % 64 != 0 ? 1 : 0);

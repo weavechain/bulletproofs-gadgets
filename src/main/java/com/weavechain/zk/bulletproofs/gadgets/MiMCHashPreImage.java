@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.CompressedRistretto;
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.ECPoint;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import io.airlift.compress.Compressor;
 import io.airlift.compress.zstd.ZstdCompressor;
@@ -42,7 +42,7 @@ public class MiMCHashPreImage implements Gadget<MiMCHashPreImageParams> {
         BigInteger left = ConvertUtils.convertToBigInteger(v.get(0));
         BigInteger right = ConvertUtils.convertToBigInteger(v.get(1));
 
-        List<CompressedRistretto> commitments = new ArrayList<>();
+        List<ECPoint> commitments = new ArrayList<>();
 
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);

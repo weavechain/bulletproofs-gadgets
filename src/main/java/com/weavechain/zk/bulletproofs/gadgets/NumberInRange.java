@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.CompressedRistretto;
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.ECPoint;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class NumberInRange implements Gadget<NumberInRangeParams> {
         BigInteger a = v.subtract(params.getMin());
         BigInteger b = params.getMax().subtract(v);
 
-        List<CompressedRistretto> commitments = new ArrayList<>();
+        List<ECPoint> commitments = new ArrayList<>();
 
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);

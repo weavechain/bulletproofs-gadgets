@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.CompressedRistretto;
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.ECPoint;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import io.airlift.compress.Compressor;
 import io.airlift.compress.zstd.ZstdCompressor;
@@ -48,12 +48,12 @@ public class RecordsAddUpdateProof implements Gadget<RecordsAddPreImageHashParam
         List<Object> values = (List<Object>)value;
 
         byte[] fromHash = Base58.decode(params.getFromHash());
-        Scalar left = Scalar.fromBits(fromHash);
+        Scalar left = BulletProofs.getFactory().fromBits(fromHash);
 
         String rowHash = MiMCHashPreImage.computeMiMCHash(values, params.getSeed(), params.getRounds(), useZstdCompress);
-        Scalar right = Scalar.fromBits(Base58.decode(rowHash));
+        Scalar right = BulletProofs.getFactory().fromBits(Base58.decode(rowHash));
 
-        List<CompressedRistretto> commitments = new ArrayList<>();
+        List<ECPoint> commitments = new ArrayList<>();
 
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);
@@ -114,7 +114,7 @@ public class RecordsAddUpdateProof implements Gadget<RecordsAddPreImageHashParam
         byte[] resultedHash = Base58.decode(params.getExpectedHash());
         byte[] fromHash = Base58.decode(params.getFromHash());
 
-        if (checkHash(verifier, aleft, aright, Scalar.fromBits(resultedHash), params.getSeed(), params.getRounds())) {
+        if (checkHash(verifier, aleft, aright, BulletProofs.getFactory().fromBits(resultedHash), params.getSeed(), params.getRounds())) {
             byte[] data = MiMCHashPreImage.serializeForHash(params.getNewRow()).getBytes(StandardCharsets.UTF_8);
             byte[] toHash;
             if (useZstdCompress) {
@@ -140,7 +140,7 @@ public class RecordsAddUpdateProof implements Gadget<RecordsAddPreImageHashParam
             verifier.constrainLCWithScalar(hashes.get(hashes.size() - 1), rowHash);
 
             //TODO: a variant which computes the source hash from all existing data
-            verifier.constrainLCWithScalar(LinearCombination.from(aleft.getVariable()), Scalar.fromBits(fromHash));
+            verifier.constrainLCWithScalar(LinearCombination.from(aleft.getVariable()), BulletProofs.getFactory().fromBits(fromHash));
 
             return verifier.verify(proof, pedersenCommitment, generators);
         } else {
@@ -179,7 +179,7 @@ public class RecordsAddUpdateProof implements Gadget<RecordsAddPreImageHashParam
     private static List<LinearCombination> buildHashes(ConstraintSystem cs, long seed, int rounds, List<LinearCombination> inputs) {
         List<LinearCombination> hashes = new ArrayList<>();
         for (int i = 0; i < inputs.size(); i += 2) {
-            LinearCombination hash = MiMCHash.mimc(cs, inputs.get(i), i + 1 < inputs.size() ? inputs.get(i + 1) : LinearCombination.from(Scalar.ZERO), seed, rounds);
+            LinearCombination hash = MiMCHash.mimc(cs, inputs.get(i), i + 1 < inputs.size() ? inputs.get(i + 1) : LinearCombination.from(BulletProofs.getFactory().zero()), seed, rounds);
             hashes.add(hash);
         }
 

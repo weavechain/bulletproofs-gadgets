@@ -1,7 +1,7 @@
 package com.weavechain.zk.bulletproofs.gadgets;
 
-import com.weavechain.curve25519.CompressedRistretto;
-import com.weavechain.curve25519.Scalar;
+import com.weavechain.ec.ECPoint;
+import com.weavechain.ec.Scalar;
 import com.weavechain.zk.bulletproofs.*;
 import lombok.Getter;
 import org.bitcoinj.base.Base58;
@@ -35,7 +35,7 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
     public Proof generate(Object value, RecordsWithHashesSumToParams params, Scalar rnd, PedersenCommitment pedersenCommitment, BulletProofGenerators generators) {
         List<List<Object>> values = (List<List<Object>>)value;
 
-        List<CompressedRistretto> commitments = new ArrayList<>();
+        List<ECPoint> commitments = new ArrayList<>();
 
         Transcript transcript = new Transcript();
         Prover prover = new Prover(transcript, pedersenCommitment);
@@ -53,8 +53,8 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
             byte[] hash2 = new byte[32];
             hash2[0] = hash[31];
             hash[31] = 0;
-            Scalar hashScalar = Scalar.fromBits(hash);
-            Scalar hashScalar2 = Scalar.fromBits(hash2);
+            Scalar hashScalar = BulletProofs.getFactory().fromBits(hash);
+            Scalar hashScalar2 = BulletProofs.getFactory().fromBits(hash2);
 
             Commitment vComm = prover.commit(hashScalar, rnd != null ? rnd : Utils.randomScalar());
             Allocated av = new Allocated(vComm.getVariable(), Utils.toBigInteger(hashScalar));
@@ -139,8 +139,8 @@ public class RecordsWithHashesSumTo implements Gadget<RecordsWithHashesSumToPara
             hash2[0] = hash[31];
             hash[31] = 0;
 
-            verifier.constrainLCWithScalar(LinearCombination.from(av.getVariable()), Scalar.fromBits(hash));
-            verifier.constrainLCWithScalar(LinearCombination.from(adiff.getVariable()), Scalar.fromBits(hash2));
+            verifier.constrainLCWithScalar(LinearCombination.from(av.getVariable()), BulletProofs.getFactory().fromBits(hash));
+            verifier.constrainLCWithScalar(LinearCombination.from(adiff.getVariable()), BulletProofs.getFactory().fromBits(hash2));
 
             Variable sum = verifier.commit(proof.getCommitment(i * 4 + 2));
             Allocated asum = new Allocated(sum, null);
