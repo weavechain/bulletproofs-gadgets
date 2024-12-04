@@ -13,6 +13,9 @@ IEEE Symposium on Security and Privacy (SP), pages 315–334, May 2018)
 
 Partially based on the [Rust implementation](https://github.com/lovesh/bulletproofs-r1cs-gadgets) by Lovesh Harchandani
 
+### Why Java?
+
+Java is one of the languages of choice for Fintech and Banking software. At the same time the use of advanced privacy preserving technologies is lagging behind in these sectors. One of the reasons could be that the libraries for advanced cryptographic primitives are not readily available.
 
 ### Gradle Groovy DSL
 ```
